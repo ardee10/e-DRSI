@@ -268,9 +268,11 @@
 							<button type="submit" class="btn btn-light btn-md justify-content-lg-end text-dark"><i class="icofont-filter"></i>Filter</button>
 						</div>
 						<div class="col-sm-1">
-							<a type="btn" href="<?= base_url('drsitrack/exportToExcel'); ?>" class="btn btn-info btn-md">
+							<!-- <a type="btn" href="<?= base_url('drsitrack/exportToExcel'); ?>" class="btn btn-info btn-md">
 								<i class="icofont-download"></i> Download
-							</a>
+							</a> -->
+
+							<a type="btn" href="#" onclick="downloadData()" class="btn btn-info"><i class="icofont-download"></i> Download</a>
 						</div>
 				</form>
 
@@ -360,3 +362,16 @@
 
 </div>
 </div>
+
+
+<script>
+	const base = $('#base_url').data('id')
+
+	function downloadData() {
+		let gedung = $('select[name="filter_gedung"]').val()
+		let start = $('input[name="startFilter"]').val()
+		let end = $('input[name="endFilter"]').val()
+
+		location.href = `${base}Drsitrack/exportToExcel?filter_gedung=${gedung}&startFilter=${start}&endFilter=${end}`;
+	}
+</script>

@@ -1,4 +1,5 @@
 <?php
+// ob_start(); // Tambahkan baris ini di awal file
 defined('BASEPATH') or exit('No direct script access allowed');
 ini_set('memory_limit', '512M');
 
@@ -11,9 +12,9 @@ class Drsitrack extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('spreadsheet_library');
-		$this->load->model('M_drsitrack');
+		$this->load->library('spreadsheet_library'); // Library Spreadsheet
 		$this->load->library('session'); // Pastikan session di-load
+		$this->load->model('M_drsitrack'); // Model
 	}
 
 	function filterDrsi($gedung = null, $start = null, $end = null)
@@ -48,7 +49,6 @@ class Drsitrack extends CI_Controller
 	public function exportToExcel()
 	{
 		$data = $this->session->userdata('filtered_data');
-		// $data = $this->session->userdata('filtered_data', $data['dataDrsi']);
 
 		// Jika data kosong, tampilkan pesan error 
 		if (empty($data)) {
@@ -57,14 +57,6 @@ class Drsitrack extends CI_Controller
 		}
 		$spreadsheet = $this->spreadsheet_library->buatSpreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
-
-		// Ambil data dari model atau sumber data lainnya
-		$data = $this->M_drsitrack->getData(
-			$this->input->get('filter_gedung'),
-			$this->input->get('startFilter'),
-			$this->input->get('endFilter'),
-			[]
-		);
 
 		// Tambahkan header kolom ke Excel
 		$sheet->setCellValue('A1', 'No');
