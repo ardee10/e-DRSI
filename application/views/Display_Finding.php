@@ -299,6 +299,7 @@
 					</div>
 					<div class="col-sm-4">
 						<a href="<?= base_url('Dashboard/formSubmit') ?>" target="_blank" class="btn btn-primary"><i class="material-icons">&#xE863;</i> <span><b>DRSI</b> FORM</span></a>
+						<a href="#" target="_blank" class="btn btn-primary"><i class="material-icons">&#xE863;</i> <span><b>Lihat Grafik</span></a>
 						<button class="btn btn-secondary" onclick="trackingDrsi(this)"><i class="material-icons">&#xE24D;</i> <span><b>Export to Excel</b></span></button>
 					</div>
 				</div>
