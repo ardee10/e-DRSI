@@ -417,6 +417,8 @@
 		</div>
 	</div>
 
+
+
 	<div class="credits text-center">
 		<div class="copyright">
 			&copy; Copyright <span class="text-center text-dark">FAST TRACK - PT Parkland Word Indonesia Jepara. All Rights Reserved </span>

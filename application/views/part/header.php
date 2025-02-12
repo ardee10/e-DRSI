@@ -12,7 +12,7 @@
 	<script src="<?= base_url('') ?>assets/plugins/jquery/jquery-3.7.1.js"></script>
 
 	<!-- CSS -->
-	<?php require_once('_css.php'); ?>
+
 
 	<!-- ID -->
 	<div id="base_url" data-id="<?= site_url('') ?>"></div>

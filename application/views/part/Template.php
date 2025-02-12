@@ -3,6 +3,7 @@
 
 <!-- Header -->
 <?php require_once('header.php'); ?>
+<?php require_once('_css.php'); ?>
 
 <body>
 
@@ -19,10 +20,11 @@
 
 	<main id="main" class="main">
 
-		<div class="pagetitle">
+		<div class="pagetitle mb-3">
 			<h1>Dashboard</h1>
+
 			<nav>
-				<ol class="breadcrumb">
+				<ol class="breadcrumb mb-3">
 					<li class="breadcrumb-item"><a href="index.html">Home</a></li>
 					<li class="breadcrumb-item active"><?= $title; ?></li>
 				</ol>
