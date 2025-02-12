@@ -11,6 +11,7 @@
 	<!-- jQuery -->
 	<script src="<?= base_url('') ?>assets/plugins/jquery/jquery-3.7.1.js"></script>
 
+
 	<!-- CSS -->
 
 

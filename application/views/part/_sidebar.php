@@ -1,5 +1,4 @@
 <ul class="sidebar-nav" id="sidebar-nav">
-
 	<li class="nav-item">
 		<a class="nav-link " href="<?= base_url('Home') ?>">
 			<i class="bi bi-grid"></i>

@@ -27,3 +27,5 @@
 
 <!-- SweetAlert JS Custome -->
 <script src="<?= base_url('') ?>assets/js/script.js"></script>
+
+<!-- ApexChart -->
