@@ -13,7 +13,7 @@
 
 
 	<!-- CSS -->
-
+	<?php require_once('_css.php'); ?>
 
 	<!-- ID -->
 	<div id="base_url" data-id="<?= site_url('') ?>"></div>

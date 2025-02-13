@@ -80,12 +80,26 @@
 		<div class="card">
 			<div class="card-body">
 				<h5 class="card-title text-uppercase">Defect Stage Chart</h5>
-
-				<!-- Pie Chart -->
-				<div id="chart"></div>
-
-				<!-- End Pie Chart -->
-
+				<div class="row mb-6">
+					<label for="FilterDate" class="col-sm-1 col-form-label">Filter Date</label>
+					<div class="col-sm-2">
+						<!-- <select name="month" id="Stagechart" class="form-control" onchange="Stagechart()"> -->
+						<select name="month" id="stageChart" class="form-control" onchange="Stagechart()">
+							<?php
+							for ($iM = 1; $iM <= 12; $iM++) {
+								$mont = date("F", strtotime("$iM/12/10"));
+								$g = date("m", strtotime("$iM/12/10"));
+								$thismo = date('F');
+							?>
+								<option value="<?= $g ?>" <?= ($g == $bulan) ? "selected" : "" ?>><?= $mont ?></option>
+							<?php
+							}
+							?>
+						</select>
+					</div>
+				</div>
+				<hr>
+				<div id="chartdefect"></div>
 			</div>
 		</div>
 	</div>
@@ -195,7 +209,6 @@
 
 <script>
 	var base = $('#base_url').data('id')
-
 	// let id =
 	function editFinding(edit) {
 		let id = $(edit).data('id')
@@ -248,67 +261,100 @@
 	}
 
 	/* ApxChart */
-	document.addEventListener("DOMContentLoaded", () => {
-		function generateData(baseval, count, yrange) {
-			var i = 0;
-			var series = [];
-			while (i < count) {
-				var x = Math.floor(Math.random() * (750 - 1 + 1)) + 1;;
-				var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-				var z = Math.floor(Math.random() * (75 - 15 + 1)) + 15;
-				series.push([x, y, z]);
-				baseval += 86400000;
-				i++;
+	function buatGrafik(bulan) {
+		$.ajax({
+			type: 'GET',
+			/* 192.168.44.97/e-drsi/Home/getDefectData/1 */
+			url: `${base}Home/getDefectData/${bulan}`, // Ganti dengan URL yang sesuai
+			dataType: 'json',
+			success: function(data) {
+				var defectCounts = {}; // Objek untuk menyimpan jumlah defect stage
+				var tanggalArray = [];
+				var seriesData = [];
+
+				// Proses data untuk menghitung jumlah defect stage per tanggal
+				data.forEach(item => {
+					var tanggal = moment(item.date).format('D MMM'); // Format tanggal
+					if (!tanggalArray.includes(tanggal)) {
+						tanggalArray.push(tanggal);
+					}
+					if (!defectCounts[tanggal]) {
+						defectCounts[tanggal] = {};
+					}
+					if (!defectCounts[tanggal][item.defect_stage]) {
+						defectCounts[tanggal][item.defect_stage] = 0;
+					}
+					defectCounts[tanggal][item.defect_stage]++;
+				});
+
+				// Buat data series untuk ApexCharts
+				var series = [];
+				var defectStages = new Set(); // Untuk menyimpan semua defect stage yang unik
+
+				tanggalArray.forEach(tanggal => {
+					for (const defectStage in defectCounts[tanggal]) {
+						defectStages.add(defectStage);
+					}
+				});
+
+				defectStages.forEach(defectStage => {
+					var data = [];
+					tanggalArray.forEach(tanggal => {
+						data.push(defectCounts[tanggal] && defectCounts[tanggal][defectStage] ? defectCounts[tanggal][defectStage] : 0);
+					});
+					series.push({
+						name: defectStage,
+						data: data
+					});
+				});
+
+				var options = {
+					series: series,
+					chart: {
+						height: 350,
+						type: 'line', // Atau 'bar', sesuai preferensi
+						id: 'areachart-2',
+						zoom: {
+							enabled: false
+						}
+					},
+					dataLabels: {
+						enabled: false
+					},
+					stroke: {
+						curve: 'straight'
+					},
+					title: {
+						text: 'DEFECT STAGE - TREND CHART'
+					},
+					grid: {
+						row: {
+							colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+							opacity: 0.5
+						},
+					},
+					xaxis: {
+						categories: tanggalArray
+					}
+				};
+
+				var chart = new ApexCharts(document.querySelector("#chartdefect"), options);
+				chart.render();
+			},
+			error: function(error) {
+				console.error("Error fetching data:", error);
 			}
-			return series;
-		}
-		new ApexCharts(document.querySelector("#chart"), {
-			series: [{
-					name: 'Bubble1',
-					data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
-						min: 10,
-						max: 60
-					})
-				},
-				{
-					name: 'Bubble2',
-					data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
-						min: 10,
-						max: 60
-					})
-				},
-				{
-					name: 'Bubble3',
-					data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
-						min: 10,
-						max: 60
-					})
-				},
-				{
-					name: 'Bubble4',
-					data: generateData(new Date('11 Feb 2017 GMT').getTime(), 20, {
-						min: 10,
-						max: 60
-					})
-				}
-			],
-			chart: {
-				height: 333,
-				type: 'bubble',
-			},
-			dataLabels: {
-				enabled: false
-			},
-			fill: {
-				opacity: 0.8
-			},
-			xaxis: {
-				tickAmount: 12,
-				type: 'category',
-			},
-			yaxis: {
-				max: 70
-			}
-		}).render();
+		});
+	}
+
+	// Panggil fungsi buatGrafik saat halaman dimuat dan saat bulan diubah
+
+	$(document).ready(function() {
+		// console.log(tanggalArray);
+		buatGrafik($('#stageChart').val()); // Panggil dengan bulan awal
+		$('#stageChart').change(function() {
+			var bulan = $(this).val(); // Pastikan ini menghasilkan angka 1-12
+			buatGrafik(bulan);
+		});
 	});
 </script>

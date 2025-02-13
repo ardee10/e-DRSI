@@ -17,28 +17,27 @@ class Home extends CI_Controller
 		if (!$this->session->userdata('username')) {
 			redirect('auth');
 		} else {
-
+			$bulan = date("m", strtotime(date("Y-m-d")));
 			$data = [
-				'title' => 'DATA DRSI (Defective Reduction Throught Self Inspection)',
-				'user' => $this->db->get_where('tbl_user', ['username' =>  $this->session->userdata('username')])->row(),
-				'gedung' => $this->M_Home->get_gedung(),
-				'finding' => $this->M_Home->dashboard()
+				'title' 	=> 'DATA DRSI (Defective Reduction Throught Self Inspection)',
+				'bulan'		=> $bulan,
+				'user' 		=> $this->db->get_where('tbl_user', ['username' =>  $this->session->userdata('username')])->row(),
+				'gedung' 	=> $this->M_Home->get_gedung(),
+				'finding' 	=> $this->M_Home->dashboard()
 			];
 			$this->template->load('part/template', 'index', $data);
 		}
 	}
 
 	/* Hapus data Finding */
-
 	function hapusFinding($id)
 	{
-
 		$id = [
 			'id_finding' => $id
 		];
 		$this->M_Home->hapusFinding($id);
 		$this->session->set_flashdata('flash', 'Data berhasil dihapus');
-		redirect('Home', 'refresh');
+		redirect('', 'refresh');
 	}
 
 	/* Data Finding By ID */
@@ -46,6 +45,15 @@ class Home extends CI_Controller
 	public function detailFinding($id)
 	{
 		$data =  $this->M_Home->detailFinding($id);
+		echo json_encode($data);
+	}
+
+	/* Mengambil data FIlter by Bulan */
+
+	// Di controller Home.php
+	public function getDefectData($bulan)
+	{
+		$data = $this->db->get_where('tbl_finding', array('MONTH(date)' => $bulan))->result(); // Ganti nama tabel
 		echo json_encode($data);
 	}
 }

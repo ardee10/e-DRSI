@@ -47,6 +47,9 @@ class M_home extends CI_Model
 		$datafindingid = $this->db->get()->row();
 		return $datafindingid;
 	}
+
+	/* Defect Finding Bulan */
+	// function getDefectData($bulan) {}
 }
 
 /* End of file: M_home.php */
