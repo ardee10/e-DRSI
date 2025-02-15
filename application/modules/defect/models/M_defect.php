@@ -22,13 +22,10 @@ class M_defect extends CI_Model
 	function defectClass()
 	{
 
-		// $this->db->select('*');
-		// $this->db->from('tbl_defect_class');
-		// $this->db->join('tbl_defect', 'tbl_defect.id_defect = tbl_defect.id_defect', 'left');
+
 		$this->db->from('tbl_defect');
 		$this->db->join('tbl_defect_class', 'tbl_defect.id_defect = tbl_defect_class.id_defect', 'left');
-		// $this->db->select('*');
-		// $this->db->from('tbl_defect');
+
 		$defectClass = $this->db->get()->result();
 		return $defectClass;
 	}

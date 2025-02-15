@@ -18,9 +18,11 @@ class Home extends CI_Controller
 			redirect('auth');
 		} else {
 			$bulan = date("m", strtotime(date("Y-m-d")));
+			$tahun = date("Y", strtotime(date("Y-m-d")));
 			$data = [
 				'title' 	=> 'DATA DRSI (Defective Reduction Throught Self Inspection)',
 				'bulan'		=> $bulan,
+				'tahun'		=> $tahun,
 				'user' 		=> $this->db->get_where('tbl_user', ['username' =>  $this->session->userdata('username')])->row(),
 				'gedung' 	=> $this->M_Home->get_gedung(),
 				'finding' 	=> $this->M_Home->dashboard()

@@ -45,9 +45,9 @@
 		</a>
 	</li><!-- End F.A.Q Page Nav -->
 	<li class="nav-item">
-		<a class="nav-link collapsed" href="pages-faq.html">
+		<a class="nav-link collapsed" href="<?= base_url('Leader') ?>">
 			<i class="bi bi-question-circle"></i>
-			<span>DATA USER</span>
+			<span>DATA LEADER</span>
 		</a>
 	</li><!-- End F.A.Q Page Nav -->
 </ul>

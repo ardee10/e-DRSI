@@ -80,7 +80,7 @@
 		<div class="card">
 			<div class="card-body">
 				<h5 class="card-title text-uppercase">Defect Stage Chart</h5>
-				<div class="row mb-6">
+				<div class="row mb-7">
 					<label for="FilterDate" class="col-sm-1 col-form-label">Filter Date</label>
 					<div class="col-sm-2">
 						<!-- <select name="month" id="Stagechart" class="form-control" onchange="Stagechart()"> -->
@@ -97,6 +97,18 @@
 							?>
 						</select>
 					</div>
+					<label for="FilterDate" class="col-sm-2 col-form-label">
+						<?= $tahun; ?>
+					</label>
+					<!-- <div class="col-sm-3 mb-2">
+						<div class="col-sm-3 mb-2">
+							<label for="FilterDate" class="col-sm-2 col-form-label">
+								<?= $tahun; ?>
+							</label>
+
+
+						</div>
+					</div> -->
 				</div>
 				<hr>
 				<div id="chartdefect"></div>
@@ -312,7 +324,7 @@
 					series: series,
 					chart: {
 						height: 350,
-						type: 'line', // Atau 'bar', sesuai preferensi
+						type: 'line', // 
 						id: 'areachart-2',
 						zoom: {
 							enabled: false
@@ -348,7 +360,6 @@
 	}
 
 	// Panggil fungsi buatGrafik saat halaman dimuat dan saat bulan diubah
-
 	$(document).ready(function() {
 		// console.log(tanggalArray);
 		buatGrafik($('#stageChart').val()); // Panggil dengan bulan awal

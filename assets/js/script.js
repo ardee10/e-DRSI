@@ -9,9 +9,17 @@ if (flashData) {
     });
 }
 
+const flashDataError = $('.flash-data-error').data('flashdata');
+// console.log(flashData);
+if (flashDataError) {
+    Swal.fire({
+        title: 'Error',
+        text: '' + flashDataError,
+       icon :'warning'
+    });
+}
 /* Login Gagal */
 const flashLogin = $('.flash-data-login').data('flashdata');
-
 if (flashLogin ) {
     Swal.fire({
         title:'Error',

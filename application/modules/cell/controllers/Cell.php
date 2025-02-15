@@ -15,9 +15,9 @@ class Cell extends CI_Controller
 		/* DATA CELL */
 		$data = [
 
-			'title' => 'DATA CELL',
-			'user' 			=> $this->db->get_where('tbl_user', ['username' => $this->session->userdata('username')])->row(),
-			'cell' => $this->M_cell->dataCell()
+			'title' 	=> 'DATA CELL',
+			'user' 		=> $this->db->get_where('tbl_user', ['username' => $this->session->userdata('username')])->row(),
+			'cell' 		=> $this->M_cell->dataCell()
 
 		];
 
