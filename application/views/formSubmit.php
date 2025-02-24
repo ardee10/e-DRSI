@@ -5,10 +5,8 @@
 		height: auto;
 		background-attachment: fixed;
 		background-repeat: no-repeat;
-
 	}
 </style>
-
 <div class="container-fluid">
 	<div class="container">
 		<div class="row justify-content-center">

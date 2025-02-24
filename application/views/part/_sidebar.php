@@ -1,7 +1,7 @@
 <ul class="sidebar-nav" id="sidebar-nav">
 	<li class="nav-item">
 		<a class="nav-link " href="<?= base_url('Home') ?>">
-			<i class="bi bi-grid"></i>
+			<i class="icofont-dashboard-web"></i>
 			<span>Dashboard</span>
 		</a>
 	</li><!-- End Dashboard Nav -->
@@ -33,20 +33,20 @@
 	<li class="nav-heading">PAGES</li>
 	<li class="nav-item">
 		<a class="nav-link collapsed" href="<?= base_url('Datamodel') ?>">
-			<i class="bi bi-person"></i>
+			<i class="icofont-database"></i>
 			<span>DATA MODEL</span>
 		</a>
 	</li><!-- End Profile Page Nav -->
 
 	<li class="nav-item">
 		<a class="nav-link collapsed" href="<?= base_url('cell') ?>">
-			<i class="bi bi-question-circle"></i>
+			<i class="icofont-list"></i>
 			<span>DATA CELL</span>
 		</a>
 	</li><!-- End F.A.Q Page Nav -->
 	<li class="nav-item">
 		<a class="nav-link collapsed" href="<?= base_url('Leader') ?>">
-			<i class="bi bi-question-circle"></i>
+			<i class="icofont-group"></i>
 			<span>DATA LEADER</span>
 		</a>
 	</li><!-- End F.A.Q Page Nav -->

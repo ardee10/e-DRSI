@@ -8,6 +8,7 @@ class Dashboard extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('M_dashboard');
+		// $this->load->session()
 		$this->load->helper('tgl_indo');
 	}
 
@@ -15,11 +16,11 @@ class Dashboard extends CI_Controller
 	public function DisplayFinding()
 	{
 
-		$factory = 'DRSI';
+		// $factory = 'DRSI';
 		$bulan = date("m", strtotime(date("Y-m-d")));
 		$tahun = date("Y", strtotime(date("Y-m-d")));
 		$data = [
-			'factory'   => $factory,
+
 			'bulan'     => $bulan,
 			'tahun'     => $tahun,
 			'gedung' 	=> $this->M_dashboard->get_gedung(),
@@ -84,6 +85,8 @@ class Dashboard extends CI_Controller
 
 	function formSubmit()
 	{
+		// if session_name()
+
 		$data = [
 			'title' 		=> 'DEFECT REDUCTION (DR) & SELF INSPECTION (SI)',
 			'gedung' 		=> $this->M_dashboard->get_gedung(),

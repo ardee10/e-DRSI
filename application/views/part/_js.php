@@ -28,5 +28,5 @@
 <!-- SweetAlert JS Custome -->
 <script src="<?= base_url('') ?>assets/js/script.js"></script>
 
-<!-- ApexChart -->
+<!-- MomentJS -->
 <script src="<?= base_url('') ?>assets/js/moment.js"></script>

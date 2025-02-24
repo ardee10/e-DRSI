@@ -153,37 +153,25 @@ class Home extends CI_Controller
 
 			foreach ($tanggalArray as $tanggal) {
 				$jumlah = 0; // Inisialisasi jumlah untuk setiap tanggal
-				$dataGrafik = []; // Array untuk menyimpan data grafik
+				$query = $this->db->select('*')
+					->from('tbl_finding')
+					->where('who_stop_defect', $where)
+					->where('date', $tanggal)
+					->get();
+				$jumlah = $query->num_rows();
+				// print_r($jumlah);
+				// die();
 
-				//Ambil data dari database berdasarkan nik
-				// Loop melalui data yang diambil dari database
 				foreach ($drsidata as $data) {
-					$tanggal = $data->date; // Ambil tanggal dari data
-					$jumlah = $data->count2; // Ambil jumlah dari data
-
-					// Periksa apakah tanggal sudah ada di array $dataGrafik
-					if (isset($dataGrafik[$tanggal])) {
-						// Jika sudah ada, tambahkan jumlahnya
-						$dataGrafik[$tanggal]['jumlah'] += $jumlah;
-					} else {
-						// Jika belum ada, buat entri baru
-						$dataGrafik[$tanggal] = [
-							'tanggal' => $tanggal,
-							'jumlah' => $jumlah
-						];
+					if ($data->date == $tanggal) {
+						$jumlah = $data->count2; // Ambil jumlah dari data jika tanggalnya sama
+						break; // Keluar dari loop dalam jika tanggal sudah ditemukan
 					}
 				}
-
-				// Ubah format array agar sesuai dengan yang dibutuhkan oleh grafik
-				$dataGrafikArray = [];
-				foreach ($dataGrafik as $tanggal => $data) {
-					$dataGrafikArray[] = [
-						'tanggal' => $tanggal,
-						'jumlah' => $data['jumlah']
-					];
-				}
-
-				$data['dataGrafik'] = $dataGrafikArray;
+				$dataGrafik[] = [
+					'tanggal' => $tanggal,
+					'jumlah' => $jumlah
+				];
 			}
 
 			$dataDefect = $this->db->get('tbl_defect')->result(); // Ambil data dari tbl_defect
@@ -197,12 +185,10 @@ class Home extends CI_Controller
 				];
 			}
 
-
-			$data['title'] = 'GRAFIK';
-			$data['leader'] = $this->db->get_where('tbl_leader', ['nik' => $this->session->userdata('nik')])->row();
-			// $data->dataGrafik = $dataGrafik;
-			$data['dataGrafik'] = $dataGrafikArray;
-			$data['dataGrafikDefect'] = $dataGrafikDefect;
+			$data->title = 'GRAFIK';
+			$data->leader = $this->db->get_where('tbl_leader', ['nik' => $this->session->userdata('nik')])->row();
+			$data->dataGrafik = $dataGrafik;
+			$data->dataGrafikDefect = $dataGrafikDefect;
 			$this->template->load('part/template', 'graph_leader', $data);
 		}
 	}

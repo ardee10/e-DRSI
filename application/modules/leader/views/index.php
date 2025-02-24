@@ -8,23 +8,9 @@
 	<div class="card">
 		<div class="card-body">
 			<div class="row">
-				<div class="col-2">
-					<div class="row-2">
-						<button type="button" class="btn btn-primary btn-sm mt-3" data-bs-toggle="modal" data-bs-target="#modalLeader"><i class="icofont-plus-circle"></i> Data Leader</button>
-					</div>
-				</div>
-
-				<div class="col-2">
-					<div class="row-2">
-						<button type="button" class="btn btn-info btn-sm mt-3 text-light" onclick="alert('BELUM DIBUATKAN')"><i class="icofont-upload"></i> Import Data Leader</button>
-					</div>
-				</div>
-
-				<div class="col">
-					<div class="float-end">
-						<button type="button" class="btn btn-success btn-sm mt-3" onclick="document.location='<?= base_url() ?>/Home'"><i class="icofont-long-arrow-left"></i> Kembali</button>
-					</div>
-
+				<div class="col-3 d-flex justify-content-between mt-4">
+					<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalLeader"><i class="icofont-plus-circle"></i> Data Leader</button>
+					<button class="btn btn-sm btn-success btn-sm" type="button"><i class="icofont-upload"></i>Import</button>
 				</div>
 			</div>
 			<div class="table-responsive">

@@ -33,16 +33,15 @@
 						<div class="card mb-3">
 							<div class="card-body">
 								<div class="pt-4 pb-2">
-									<h3 class="card-title text-center pb-0 fs-4"><b>e-DRSI | Admin</b></h3>
+									<h3 class="card-title text-center pb-0 fs-4"><b>e-DRSI | Leader</b></h3>
 									<p class="text-center small">Defect Reduction (DR) and Self Inspection (SF)</p>
 								</div>
-								<form class="row g-3 needs-validation" action="<?= base_url('auth/cek_login'); ?>" method="POST" novalidate>
-
+								<form class="row g-3 needs-validation" action="<?= base_url('auth/cek_login_leader'); ?>" method="POST" novalidate>
 									<div class="col-12">
-										<label for="Username" class="form-label">Username</label>
+										<label for="Username" class="form-label">NIK</label>
 										<div class="input-group has-validation">
-											<input type="text" name="username" class="form-control" id="username" required>
-											<div class="invalid-feedback">Please enter your username.</div>
+											<input type="text" name="nik" class="form-control" id="nik" required>
+											<div class="invalid-feedback">Please enter your NIk.</div>
 										</div>
 									</div>
 

@@ -4,20 +4,32 @@
 <!-- Header -->
 <?php require_once('header.php'); ?>
 
-
 <body>
-
 	<!-- NAV BAR -->
+	<?php
+	if ($this->session->userdata('username')) {
+		require_once('_navbar.php');
+	?>
+		<aside id="sidebar" class="sidebar">
+			<?php
+			require_once('_sidebar.php')
+			?>
+		</aside><!-- End Sidebar-->
 
-	<?php require_once('_navbar.php'); ?>
+	<?php
+	}
+	if ($this->session->userdata('nik')) {
+		require_once('navbar_leader.php');
+	?>
+		<aside id="sidebar" class="sidebar">
+			<?php
+			require_once('sidebar_leader.php')
+			?>
+		</aside><!-- End Sidebar-->
 
-	<!-- ======= Sidebar ======= -->
-	<aside id="sidebar" class="sidebar">
-
-		<?php require_once('_sidebar.php') ?>
-
-	</aside><!-- End Sidebar-->
-
+	<?php
+	}
+	?>
 	<main id="main" class="main">
 
 		<div class="pagetitle mb-3">

@@ -284,9 +284,6 @@
 
 
 <div class="container-fluid">
-	<?php if ($this->session->flashdata('flash')) : ?>
-		<div class="flash-data" data-flashdata="<?= $this->session->flashdata('flash'); ?>"></div>
-	<?php endif; ?>
 	<div class="table-responsive">
 		<div class="table-wrapper">
 			<div class="table-title">
@@ -298,8 +295,8 @@
 						<h2> DRSI (Defective Reduction Throught Self Inspection)</h2>
 					</div>
 					<div class="col-sm-4">
-						<a href="<?= base_url('Dashboard/formSubmit') ?>" target="_blank" class="btn btn-primary"><i class="material-icons">&#xE863;</i> <span><b>DRSI</b> FORM</span></a>
-						<a href="#" target="_blank" class="btn btn-primary"><i class="material-icons">&#xE863;</i> <span><b>Lihat Grafik</span></a>
+						<!-- <a href="<?= base_url('Dashboard/formSubmit') ?>" target="_blank" class="btn btn-primary"><i class="material-icons">&#xE863;</i> <span><b>DRSI</b> FORM</span></a> -->
+						<button class="btn btn-primary" onclick="submitForm()"><i class="material-icons">&#xE863;</i> <span><b>DRSI</b> FORM</span></button>
 						<button class="btn btn-secondary" onclick="trackingDrsi(this)"><i class="material-icons">&#xE24D;</i> <span><b>Export to Excel</b></span></button>
 					</div>
 				</div>
@@ -307,7 +304,7 @@
 			<div class="table-filter">
 				<div class="row mb-6">
 					<div class="col-sm-3 mb-2">
-						<h3><b><?= $factory ?></b></h3>
+
 					</div>
 
 					<div class="col-sm-3 mb-2">
@@ -342,7 +339,7 @@
 							foreach ($gedung as $gd):
 							?>
 
-								<option value="<?= $gd->gedung ?>" <?= ($gd->gedung == $factory) ? 'selected' : '' ?>><?= $gd->gedung ?></option>
+								<option value="<?= $gd->gedung ?>"><?= $gd->gedung ?></option>
 							<?php endforeach; ?>
 						</select>
 					</div>
@@ -564,7 +561,19 @@
 		}
 
 		function trackingDrsi() {
-
 			window.open(base + 'Drsitrack/filterDrsi')
+		}
+
+		function submitForm() {
+
+			let text = "SILAHKAN LOGIN TERLEBIH DAHULU";
+			if (confirm(text) == true) {
+				window.open(base + 'auth/login_leader')
+			} else {
+				window.close
+			}
+
+
+
 		}
 	</script>
