@@ -414,6 +414,35 @@
 		</div>
 	</div>
 
+	<!-- Chart disini -->
+	<div class="row">
+
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title text-bold">DEFECT REDUCTION - TREND CHART</h5>
+					<!-- Line Chart -->
+					<div id="chartdefect"></div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">SELF INSPECTION & AWARENESS MEMBERS - TREND CHART</h5>
+
+					<!-- Member Chart -->
+					<div id="selfChart"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- End Chart disini -->
+
 
 
 	<div class="credits text-center">
@@ -421,7 +450,7 @@
 			&copy; Copyright <span class="text-center text-dark">FAST TRACK - PT Parkland Word Indonesia Jepara. All Rights Reserved </span>
 		</div>
 		<div class="credits">
-			<p class="text-dark">Develop by <a href="#" class="text-dark">IT Department</a></p>
+			<p class="text-dark">Develop by IT Department e-DRSI VER. 1.0</a></p>
 		</div>
 
 	</div>
@@ -523,57 +552,185 @@
 		</div>
 	</div><!-- End Extra Large Modal-->
 
-	<script>
-		/* Select Building */
-		var base = $('#base_url').data('id')
+</div>
 
-		function modalDisplay(ctx) {
-			let id = $(ctx).data('id')
-			// e.preventDevault();
-			if (id) {
-				$.ajax({
-					type: "GET",
-					url: `${base}dashboard/DataFindingId/${id}`,
-					dataType: "json",
-					success: function(data) {
-						$('#date').val(data.date);
-						$('#factory').val(data.gedung);
-						$('#cell').val(data.cell);
-						$('#artikel').val(data.artikel);
-						$('#model').val(data.model);
-						$('#defect_stage').val(data.defect_stage);
-						$('#defectName2').val(data.nama_defect_sub_class);
-						$('#pairs').val(data.pairs);
-						$('#defect_source').val(data.defect_source);
-						$('#self_inspect').val(data.self_inspect);
-						$('#who_defect_go').val(data.who_defect_go);
-						$('#count').val(data.count);
-						$('#defect_area').val(data.defect_area);
-						$('#who_stop_defect').val(data.who_stop_defect);
-						$('#count2').val(data.count2);
-						$('#remark').val(data.remark);
-						$("#picture").attr("src", base + "assets/img/img-finding/" + data.picture)
+<script>
+	/* Select Building */
+	var base = $('#base_url').data('id')
+
+	function modalDisplay(ctx) {
+		let id = $(ctx).data('id')
+		// e.preventDevault();
+		if (id) {
+			$.ajax({
+				type: "GET",
+				url: `${base}dashboard/DataFindingId/${id}`,
+				dataType: "json",
+				success: function(data) {
+					$('#date').val(data.date);
+					$('#factory').val(data.gedung);
+					$('#cell').val(data.cell);
+					$('#artikel').val(data.artikel);
+					$('#model').val(data.model);
+					$('#defect_stage').val(data.defect_stage);
+					$('#defectName2').val(data.nama_defect_sub_class);
+					$('#pairs').val(data.pairs);
+					$('#defect_source').val(data.defect_source);
+					$('#self_inspect').val(data.self_inspect);
+					$('#who_defect_go').val(data.who_defect_go);
+					$('#count').val(data.count);
+					$('#defect_area').val(data.defect_area);
+					$('#who_stop_defect').val(data.who_stop_defect);
+					$('#count2').val(data.count2);
+					$('#remark').val(data.remark);
+					$("#picture").attr("src", base + "assets/img/img-finding/" + data.picture)
+				}
+			});
+		}
+		$('#modalDisplay').modal('show')
+
+	}
+
+	function trackingDrsi() {
+		window.open(base + 'Drsitrack/filterDrsi')
+	}
+
+	function submitForm() {
+
+		let text = "SILAHKAN LOGIN TERLEBIH DAHULU";
+		if (confirm(text) == true) {
+			window.open(base + 'auth/login_leader')
+		} else {
+			window.close
+		}
+	}
+	/* ChartDefect */
+	$(document).ready(function() {
+		var chart;
+		$.ajax({
+			type: 'GET',
+			url: base + "Dashboard/getDefectData",
+			dataType: 'json',
+			success: function(data) {
+				var defectCounts = {};
+				var tanggalArray = [];
+				var seriesData = [];
+				data.forEach(item => {
+					var tanggal = moment(item.date).format('D MMM Y'); // Format tanggal
+					// console.log(tanggal);
+					if (!tanggalArray.includes(tanggal)) {
+						tanggalArray.push(tanggal);
+					}
+					if (!defectCounts[tanggal]) {
+						defectCounts[tanggal] = {};
+					}
+					if (!defectCounts[tanggal][item.nama_defect]) {
+						defectCounts[tanggal][item.nama_defect] = 0;
+					}
+					defectCounts[tanggal][item.nama_defect]++;
+				});
+				var series = [];
+				var defectStages = new Set();
+				// console.log(defectStages);
+				tanggalArray.forEach(tanggal => {
+					for (const defectStage in defectCounts[tanggal]) {
+						defectStages.add(defectStage);
 					}
 				});
+				defectStages.forEach(defectStage => {
+					var data = [];
+					tanggalArray.forEach(tanggal => {
+						data.push(defectCounts[tanggal] && defectCounts[tanggal][defectStage] ? defectCounts[tanggal][defectStage] : 0);
+					});
+					series.push({
+						name: defectStage,
+						data: data
+					});
+				});
+				if (chart) {
+					chart.destroy();
+				}
+				var options = {
+					series: series,
+					chart: {
+						height: 350,
+						type: 'line', // 
+						zoom: {
+							enabled: false
+						}
+					},
+					dataLabels: {
+						enabled: false
+					},
+					stroke: {
+						curve: 'smooth',
+						curve: ['straight', 'smooth', 'monotoneCubic', 'stepline']
+					},
+					grid: {
+						row: {
+							colors: ['#f3f3f3', 'transparent'],
+							opacity: 0.5
+						},
+					},
+					xaxis: {
+						categories: tanggalArray
+					},
+					yaxis: {
+						title: {
+							text: 'Jumlah'
+						},
+					},
+				};
+
+				var chart = new ApexCharts(document.querySelector("#chartdefect"), options);
+				chart.render();
+			},
+			error: function(error) {
+				console.error("Error fetching data:", error);
 			}
-			$('#modalDisplay').modal('show')
+		});
 
-		}
+		/* TOP Member Chart */
 
-		function trackingDrsi() {
-			window.open(base + 'Drsitrack/filterDrsi')
-		}
+		var top10Inspect;
+		const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#f1c40f', '#34495e', '#e67e22', '#7f8c8d']; // Array warna
+		$.ajax({
+			type: 'GET',
+			url: base + "Dashboard/topMemberSelfInspect",
+			dataType: 'json',
+			success: function(data) {
 
-		function submitForm() {
+				// console.log(data);
+				var options = {
+					series: [{
+						data: data.map(item => item.count2)
+					}],
+					chart: {
+						height: 350,
+						type: 'bar'
+					},
+					colors: data.map((item, index) => colors[index % colors.length]), // Berikan warna dari array, gunakan modulo untuk循环
+					xaxis: {
+						categories: data.map(item => item.nama_leader)
+					},
+					title: {
+						text: 'TOP 10 MEMBERS - WHO STOP DEFECT'
 
-			let text = "SILAHKAN LOGIN TERLEBIH DAHULU";
-			if (confirm(text) == true) {
-				window.open(base + 'auth/login_leader')
-			} else {
-				window.close
+					},
+					stroke: {
+						show: true,
+						width: 2,
+						colors: ['transparent']
+					}
+				};
+				var chart = new ApexCharts(document.querySelector("#selfChart"), options);
+				chart.render();
+			},
+			error: function(error) {
+				console.error("Error fetching data:", error);
 			}
+		});
 
 
-
-		}
-	</script>
+	});
+</script>

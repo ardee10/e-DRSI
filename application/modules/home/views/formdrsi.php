@@ -164,7 +164,7 @@
 									</div>
 									<div class="col-12">
 										<label for="qty" class="form-label">Who Stop Defect Go / Operator yang Stop Defect (Self Inspection)</label>
-										<input type="text" name="who_stop_defect" class="form-control" id="who_stop_defect" value="<?= $leader->nik ?>" disabled>
+										<input type="text" name="who_stop_defect" class="form-control" id="who_stop_defect" value="<?= $leader->nama_leader ?>" disabled>
 										<input type="hidden" name="who_stop_defect" class="form-control" id="who_stop_defect" value="<?= $leader->nik ?>">
 										<div class="invalid-feedback">Isi dengan Nama dan NIK.</div>
 									</div>

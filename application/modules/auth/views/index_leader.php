@@ -68,7 +68,7 @@
 				<div class="copyright text-center">
 					&copy; Copyright PQR - <strong><span class="text-center text-light">PT Parkland Word Indonesia Jepara</span></strong>. All Rights Reserved
 				</div>
-				<div class="credits text-center text-light"> Designed by <strong>IT Department</strong>
+				<div class="credits text-center text-light"> Designed by IT Department e-DRSI VER. 1.0
 				</div>
 			</div>
 		</div>

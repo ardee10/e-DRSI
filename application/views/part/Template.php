@@ -34,11 +34,11 @@
 
 		<div class="pagetitle mb-3">
 			<h1>Dashboard</h1>
-
 			<nav>
-				<ol class="breadcrumb mb-3">
-					<li class="breadcrumb-item"><a href="index.html">Home</a></li>
-					<li class="breadcrumb-item active"><?= $title; ?></li>
+				<!-- <ol class="breadcrumb" style="font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;"> -->
+				<ol class="breadcrumb" style="font-family: AdiHaus">
+					<li class=" breadcrumb-item mt-2 text-uppercase"><a href="#">Home</a></li>
+					<li class="breadcrumb-item active mt-2"><?= $title; ?></li>
 				</ol>
 			</nav>
 		</div><!-- End Page Title -->

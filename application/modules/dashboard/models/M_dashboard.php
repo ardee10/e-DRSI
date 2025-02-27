@@ -21,6 +21,30 @@ class M_dashboard extends CI_Model
 		return $dataDashboard;
 	}
 
+	/* Grafik Defect */
+
+	public function grafikDefect()
+	{
+		$this->db->select('*');
+		$this->db->from('tbl_finding');
+		$this->db->join('tbl_defect_sub_class', 'tbl_finding.defect_name2 = tbl_defect_sub_class.id_defect_sub_class', 'left');
+		$this->db->join('tbl_defect', 'tbl_finding.defect_stage = tbl_defect.id_defect', 'left');
+		$data = $this->db->get()->result();
+		return $data;
+	}
+
+	/* Grafik Leader */
+
+	// public function get_inspeksi($tanggal, $nik)
+	public function get_inspeksi()
+	{
+		$this->db->select('f.*, l.nama_leader');
+		$this->db->from('tbl_finding f');
+		$this->db->join('tbl_leader l', 'l.nik = f.who_stop_defect');
+		$data =  $this->db->get()->result();
+		return $data;
+	}
+
 	function get_gedung()
 	{
 		$where = [

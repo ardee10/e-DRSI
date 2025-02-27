@@ -2,7 +2,7 @@
 	<li class="nav-item">
 		<a class="nav-link " href="<?= base_url('Home') ?>">
 			<i class="icofont-dashboard-web"></i>
-			<span>Dashboard</span>
+			<span>DASHBOARD</span>
 		</a>
 	</li><!-- End Dashboard Nav -->
 
@@ -30,6 +30,24 @@
 		</ul>
 	</li><!-- End Components Nav -->
 
+	<li class="nav-item">
+		<a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+			<i class="icofont-group"></i><span>DATA LEADER</span><i class="bi bi-chevron-down ms-auto"></i>
+		</a>
+		<ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+			<li>
+				<a class="nav-link collapsed" href="<?= base_url('Leader') ?>">
+					<i class="icofont-group"></i><span>DATA LEADER</span>
+				</a>
+			</li>
+			<li>
+				<a href="<?= base_url('Leader/selfInspectionLeader') ?>">
+					<i class="bi bi-circle"></i><span>SELF INSPECTION</span>
+				</a>
+			</li>
+		</ul>
+	</li><!-- End Charts Nav -->
+
 	<li class="nav-heading">PAGES</li>
 	<li class="nav-item">
 		<a class="nav-link collapsed" href="<?= base_url('Datamodel') ?>">
@@ -43,11 +61,11 @@
 			<i class="icofont-list"></i>
 			<span>DATA CELL</span>
 		</a>
-	</li><!-- End F.A.Q Page Nav -->
-	<li class="nav-item">
+	</li>
+
+	<!-- <li>
 		<a class="nav-link collapsed" href="<?= base_url('Leader') ?>">
-			<i class="icofont-group"></i>
-			<span>DATA LEADER</span>
+			<i class="icofont-group"></i><span>DATA LEADER</span>
 		</a>
-	</li><!-- End F.A.Q Page Nav -->
+	</li> -->
 </ul>

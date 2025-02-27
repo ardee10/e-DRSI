@@ -12,7 +12,7 @@
 		<ul class="d-flex align-items-center">
 			<li class="nav-item dropdown pe-3">
 				<a class="nav-link nav-profile d-flex align-items-center pe-0 show" href="#" data-bs-toggle="dropdown" aria-expanded="true">
-					<img src="<?= base_url('') ?>assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+					<img src="<?= base_url('') ?>assets/img/user.png" alt="Profile" class="rounded-circle">
 					<span class="d-none d-md-block dropdown-toggle ps-2"><?= $user->nama; ?></span>
 				</a>
 				<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">

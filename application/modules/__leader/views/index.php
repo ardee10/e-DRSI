@@ -15,10 +15,9 @@
 						<!-- <button class="btn btn-sm btn-success btn-sm" type="button"><i class="icofont-upload"></i>Import</button> -->
 					</div>
 				</div>
-
 				<div class="table-responsive">
 					<hr>
-					<table id="table_" class="table table-hover table-responsive-lg">
+					<table id="table_leader" class="table table-hover table-responsive-lg">
 						<thead>
 							<tr>
 								<th scope="col">Nomor</th>
@@ -27,8 +26,6 @@
 								<th scope="col">Gedung</th>
 								<th scope="col">Cell</th>
 								<th scope="col">Area</th>
-								<th scope="col">Action</th>
-
 							</tr>
 						</thead>
 						<tbody>
@@ -36,7 +33,6 @@
 								<?php
 								$no = 1;
 								foreach ($leader as $dp) {
-
 								?>
 									<td><?= $no++ ?></td>
 									<td><?= $dp->nama_leader ?></td>
@@ -60,6 +56,7 @@
 				</div>
 			</div>
 		</div>
+
 	</div>
 
 	<div class="col-xl-3">
@@ -81,10 +78,10 @@
 		</div>
 
 	</div>
-
-
+	<!-- </div> -->
 
 </div>
+
 <!-- Add Leader -->
 <form action="<?= base_url('') ?>Leader/addLeader" method="POST">
 	<div class="modal fade" id="modalLeader" tabindex="-1">
@@ -204,4 +201,26 @@
 		}
 		$('#modalDefectStandart').modal('show')
 	}
+
+	// A $( document ).ready() block.
+	$(document).ready(function() {
+		$('#table_leader').DataTable({
+			"ajax": {
+				"url": base + "Leader", // Replace with your data URL
+				"dataSrc": "" // Leave empty if your data is already in the correct format
+			},
+			"columns": [{
+					"data": "name"
+				},
+				{
+					"data": "age"
+				},
+				{
+					"data": "city"
+				}
+			]
+		});
+
+
+	});
 </script>

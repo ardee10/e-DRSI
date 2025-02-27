@@ -116,9 +116,16 @@ class M_leader extends CI_Model
 			//proses import
 			$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($config['upload_path'] . $config['file_name']);
 			$worksheet = $spreadsheet->getActiveSheet()->toArray();
+			// $hasil = $this->Import($worksheet);
 			$this->Import($worksheet);
 			unlink('./file/temp/' . $nama);
 			$this->session->set_flashdata('flash', 'Data Leader berhasil di Import');
+
+			// return  [
+			// 	'kode'      => 'success',
+			// 	'msg'       => 'upload berhasil,..',
+			// 	'hasil'     => $hasil
+			// ];
 		}
 	}
 
@@ -133,6 +140,7 @@ class M_leader extends CI_Model
 			}
 		}
 
+		// return 1;
 		return $hasil;
 	}
 
@@ -174,42 +182,19 @@ class M_leader extends CI_Model
 		$this->db->join('tbl_leader l', 'l.nik = f.who_stop_defect');
 		$this->db->where('f.date', $tanggal);
 		$this->db->where('f.who_stop_defect', $nik);
+
 		return $this->db->get()->result(); // Gunakan result() karena mungkin ada banyak data
 	}
-
-	public function get_finding_by_month($month, $tahun)
-	{
-		$this->db->select('
-			tbl_leader.nama_leader,
-			tbl_leader.nik,
-			tbl_leader.area
-		');
-		$this->db->from('tbl_leader');
-		$this->db->distinct(); // Pastikan hanya leader yang unik yang diambil
-		// $this->db->group_by('nik, tanggal'); // Tambahkan field yang diperlukan
-		// Atau, jika Anda ingin menjumlahkan count2 per group:
-
-		$leader_query = $this->db->get();
-		$leader_data = $leader_query->result_array();
-
-		$result = array();
-		foreach ($leader_data as $leader) {
-			// $inspeksi_query = $this->db->select('date, count2')
-			$inspeksi_query = $this->db->select('*')
-				->from('tbl_finding')
-				->where('who_stop_defect', $leader['nik'])
-				->where('MONTH(date)', $month)
-				->where('YEAR(date)', $tahun)
-				->get();
-			$inspeksi_data = $inspeksi_query->result_array();
-
-			$leader['inspeksi'] = $inspeksi_data;
-			$result[] = $leader;
-		}
-
-		// return array('data' => $result);
-		return $result;
-	}
+	// public function get_inspeksi($tanggal_awal, $tanggal_akhir, $nik)
+	// {
+	// 	$this->db->select('f.*, l.nama_leader');
+	// 	$this->db->from('tbl_finding f');
+	// 	$this->db->join('tbl_leader l', 'l.nik = f.who_stop_defect');
+	// 	$this->db->where('f.who_stop_defect', $nik);
+	// 	$this->db->where('f.date >=', $tanggal_awal); // Filter tanggal mulai
+	// 	$this->db->where('f.date <=', $tanggal_akhir); // Filter tanggal akhir
+	// 	return $this->db->get()->result();
+	// }
 }
 
 /* End of file: M_leader.php */

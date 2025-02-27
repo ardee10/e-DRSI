@@ -49,9 +49,7 @@
 		},
 		xaxis: {
 			categories: dataGrafik.map(item => item.tanggal),
-			// title: {
-			// 	text: 'Tanggal'
-			// }
+
 		},
 		yaxis: {
 			title: {
@@ -62,6 +60,7 @@
 
 	// Grafik 2
 	var dataGrafikDefect = <?= json_encode($dataGrafikDefect) ?>;
+
 	var options2 = {
 		series: [{
 			name: 'Jumlah',

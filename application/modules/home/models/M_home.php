@@ -15,6 +15,8 @@ class M_home extends CI_Model
 	{
 		$this->db->select('*');
 		$this->db->from('tbl_finding');
+		$this->db->join('tbl_defect_sub_class', 'tbl_finding.defect_name2 = tbl_defect_sub_class.id_defect_sub_class', 'left');
+		$this->db->join('tbl_defect', 'tbl_finding.defect_stage = tbl_defect.id_defect', 'left');
 		$dataDashboard = $this->db->get()->result();
 		return $dataDashboard;
 	}
@@ -165,16 +167,36 @@ class M_home extends CI_Model
 
 	/* Data DRSI */
 
-	function dataDrsi($where)
+	public function getDefectData($bulan)
 	{
-		$where = $this->session->userdata('nik');
+		// Pastikan $bulan adalah integer (angka bulan)
+		$bulan = intval($bulan);
+
+		$this->db->select('*');
+		$this->db->from('tbl_finding');
+		$this->db->join('tbl_defect_sub_class', 'tbl_finding.defect_name2 = tbl_defect_sub_class.id_defect_sub_class', 'left');
+		$this->db->join('tbl_defect', 'tbl_finding.defect_stage = tbl_defect.id_defect', 'left');
+		// Gunakan fungsi MONTH() dan YEAR() untuk memfilter berdasarkan bulan dan tahun
+		$this->db->where('MONTH(tbl_finding.date)', $bulan);
+		$this->db->where('YEAR(tbl_finding.date)', date('Y')); // Tahun ini
+		$data = $this->db->get()->result();
+		return $data;
+	}
+
+	function dataDrsi()
+	{
+		$nik = $this->session->userdata('nik');
+		if (empty($nik)) {
+			return []; // Handle jika nik tidak ada
+		}
+
+		$where = $nik;
 		$this->db->select('*');
 		$this->db->from('tbl_finding');
 		$this->db->join('tbl_defect_sub_class', 'tbl_finding.defect_name2 = tbl_defect_sub_class.id_defect_sub_class', 'left');
 		$this->db->join('tbl_defect', 'tbl_finding.defect_stage = tbl_defect.id_defect', 'left');
 		$this->db->where('tbl_finding.who_stop_defect', $where);
-		$dataDashboard = $this->db->get()->result();
-		return $dataDashboard;
+		return $this->db->get()->result();
 	}
 
 	function dataDrsiAll()
@@ -185,6 +207,18 @@ class M_home extends CI_Model
 		$this->db->join('tbl_defect', 'tbl_finding.defect_stage = tbl_defect.id_defect', 'left');
 		$dataDrsiAll = $this->db->get()->result();
 		return $dataDrsiAll;
+	}
+
+	/* Detail data finding */
+	function dataFindingId($id)
+	{
+		// 	/* SELECT * FROM tbl_finding LEFT JOIN tbl_defect_sub_class ON tbl_finding.defect_name2 = tbl_defect_sub_class.id_defect_sub_class WHERE tbl_finding.id_finding = 8; */
+		$this->db->select('*');
+		$this->db->from('tbl_finding');
+		$this->db->join('tbl_defect_sub_class', 'tbl_finding.defect_name2 = tbl_defect_sub_class.id_defect_sub_class', 'left');
+		$this->db->where('tbl_finding.id_finding', $id);
+		$datafindingid = $this->db->get()->row();
+		return $datafindingid;
 	}
 }
 

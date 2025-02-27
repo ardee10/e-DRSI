@@ -14,8 +14,6 @@
 							<th scope="col">No</th>
 							<th scope="col">Date</th>
 							<th scope="col">Factory</th>
-							<th scope="col">Cell</th>
-							<th scope="col">Article</th>
 							<th scope="col">Model</th>
 							<th scope="col">Defect Stage</th>
 							<th scope="col">Defect Name</th>
@@ -34,31 +32,18 @@
 								<td><?= $no++ ?></td>
 								<td><?= shortdate_indo($dp->date) ?></td>
 								<td><?= $dp->gedung ?></td>
-								<td><?= $dp->cell ?></td>
-								<td><?= $dp->artikel ?></td>
 								<td><?= $dp->model ?></td>
-								<td><?= $dp->defect_stage ?></td>
-								<td><?= $dp->defect_name2 ?></td>
+								<td><?= $dp->nama_defect ?></td>
+								<td><?= $dp->nama_defect_sub_class ?></td>
 								<!-- Photo -->
 								<td>
-									<?php if ($dp->picture == null) {
-										$img = 'assets/img/no-images.png';
-									} else {
-										$path = 'assets/img/img-finding/' . $dp->picture;
-										if (file_exists($path) && $dp->picture) {
-											$img = 'assets/img/img-finding/' . $dp->picture;
-										} else {
-											$img = 'assets/img/no-images.png';
-										}
-									}
-									?>
-									<img width="80px" src="<?= $img ?>" class="rounded">
+									<img width="50px" src="<?= base_url('assets/img/img-finding/' . $dp->picture) ?>" class="rounded">
 								</td>
 								<td><?= $dp->defect_source ?></td>
 								<td><?= $dp->who_stop_defect ?></td>
 								<td class="text-align-center">
 									<a href="#" data-toggle="modal" data-target="#modalFinding" onclick="editFinding(this)" data-id="<?= $dp->id_finding; ?>"><i class=" icofont-ui-edit text-info"></i></a>
-									<!-- <a href="#"><i class="icofont-ebook text-success"></i></a> -->
+									<a href="#"><i class="icofont-ebook text-success"></i></a>
 									<a href="<?= base_url('Home/hapusFinding/'); ?><?= $dp->id_finding; ?>" class="tombol-hapus"><i class="icofont-ui-delete text-danger"></i>
 									</a>
 								</td>
@@ -83,13 +68,13 @@
 				<div class="row mb-7">
 					<label for="FilterDate" class="col-sm-1 col-form-label">Filter Date</label>
 					<div class="col-sm-2">
-						<!-- <select name="month" id="Stagechart" class="form-control" onchange="Stagechart()"> -->
-						<select name="month" id="stageChart" class="form-control" onchange="Stagechart()">
+
+						<select name="month" id="stageChart" class="form-control">
 							<?php
 							for ($iM = 1; $iM <= 12; $iM++) {
 								$mont = date("F", strtotime("$iM/12/10"));
-								$g = date("m", strtotime("$iM/12/10"));
-								$thismo = date('F');
+								$g = date("m", strtotime("$iM/12/10")); // Pastikan $g berisi angka bulan 1-12
+								$thismo = date('F'); // Variabel ini sepertinya tidak digunakan, bisa dihapus
 							?>
 								<option value="<?= $g ?>" <?= ($g == $bulan) ? "selected" : "" ?>><?= $mont ?></option>
 							<?php
@@ -272,100 +257,105 @@
 		$('#modalFinding').modal('show')
 	}
 
-	/* ApxChart */
-	function buatGrafik(bulan) {
-		$.ajax({
-			type: 'GET',
-			/* 192.168.44.97/e-drsi/Home/getDefectData/1 */
-			url: `${base}Home/getDefectData/${bulan}`, // Ganti dengan URL yang sesuai
-			dataType: 'json',
-			success: function(data) {
-				var defectCounts = {}; // Objek untuk menyimpan jumlah defect stage
-				var tanggalArray = [];
-				var seriesData = [];
-
-				// Proses data untuk menghitung jumlah defect stage per tanggal
-				data.forEach(item => {
-					var tanggal = moment(item.date).format('D MMM'); // Format tanggal
-					if (!tanggalArray.includes(tanggal)) {
-						tanggalArray.push(tanggal);
-					}
-					if (!defectCounts[tanggal]) {
-						defectCounts[tanggal] = {};
-					}
-					if (!defectCounts[tanggal][item.defect_stage]) {
-						defectCounts[tanggal][item.defect_stage] = 0;
-					}
-					defectCounts[tanggal][item.defect_stage]++;
-				});
-
-				// Buat data series untuk ApexCharts
-				var series = [];
-				var defectStages = new Set(); // Untuk menyimpan semua defect stage yang unik
-
-				tanggalArray.forEach(tanggal => {
-					for (const defectStage in defectCounts[tanggal]) {
-						defectStages.add(defectStage);
-					}
-				});
-
-				defectStages.forEach(defectStage => {
-					var data = [];
-					tanggalArray.forEach(tanggal => {
-						data.push(defectCounts[tanggal] && defectCounts[tanggal][defectStage] ? defectCounts[tanggal][defectStage] : 0);
-					});
-					series.push({
-						name: defectStage,
-						data: data
-					});
-				});
-
-				var options = {
-					series: series,
-					chart: {
-						height: 350,
-						type: 'line', // 
-						id: 'areachart-2',
-						zoom: {
-							enabled: false
-						}
-					},
-					dataLabels: {
-						enabled: false
-					},
-					stroke: {
-						curve: 'straight'
-					},
-					title: {
-						text: 'DEFECT STAGE - TREND CHART'
-					},
-					grid: {
-						row: {
-							colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-							opacity: 0.5
-						},
-					},
-					xaxis: {
-						categories: tanggalArray
-					}
-				};
-
-				var chart = new ApexCharts(document.querySelector("#chartdefect"), options);
-				chart.render();
-			},
-			error: function(error) {
-				console.error("Error fetching data:", error);
-			}
-		});
-	}
-
-	// Panggil fungsi buatGrafik saat halaman dimuat dan saat bulan diubah
 	$(document).ready(function() {
-		// console.log(tanggalArray);
-		buatGrafik($('#stageChart').val()); // Panggil dengan bulan awal
+		function buatGrafik(bulan) {
+			$.ajax({
+				type: 'GET',
+				/* 192.168.44.97/e-drsi/Home/getDefectData/1 */
+				url: `${base}Home/getDefectData/${bulan}`,
+				dataType: 'json',
+				success: function(data) {
+					var defectCounts = {}; // Objek untuk menyimpan jumlah defect stage
+					var tanggalArray = [];
+					var seriesData = [];
+
+					data.forEach(item => {
+						var tanggal = moment(item.date).format('D MMM'); // Format tanggal
+						// console.log(tanggal);
+						if (!tanggalArray.includes(tanggal)) {
+							tanggalArray.push(tanggal);
+						}
+						if (!defectCounts[tanggal]) {
+							defectCounts[tanggal] = {};
+						}
+						if (!defectCounts[tanggal][item.nama_defect]) {
+							defectCounts[tanggal][item.nama_defect] = 0;
+						}
+						defectCounts[tanggal][item.nama_defect]++;
+					});
+					// Buat data series untuk ApexCharts
+					var series = [];
+					var defectStages = new Set();
+					// console.log(defectStages);
+					tanggalArray.forEach(tanggal => {
+						for (const defectStage in defectCounts[tanggal]) {
+							defectStages.add(defectStage);
+						}
+					});
+
+					defectStages.forEach(defectStage => {
+						var data = [];
+						tanggalArray.forEach(tanggal => {
+							data.push(defectCounts[tanggal] && defectCounts[tanggal][defectStage] ? defectCounts[tanggal][defectStage] : 0);
+						});
+						series.push({
+							name: defectStage,
+							data: data
+						});
+					});
+
+					if (chart) {
+						chart.destroy();
+					}
+					var options = {
+						series: series,
+						chart: {
+							height: 350,
+							type: 'line', // 
+							id: 'areachart-2',
+							zoom: {
+								enabled: false
+							}
+						},
+						dataLabels: {
+							enabled: false
+						},
+						stroke: {
+							curve: 'straight'
+						},
+						title: {
+							text: 'DEFECT STAGE - TREND CHART'
+						},
+						grid: {
+							row: {
+								colors: ['#f3f3f3', 'transparent'],
+								opacity: 0.5
+							},
+						},
+						xaxis: {
+							categories: tanggalArray
+						}
+					};
+
+					var chart = new ApexCharts(document.querySelector("#chartdefect"), options);
+					chart.render();
+				},
+				error: function(error) {
+					console.error("Error fetching data:", error);
+				}
+			});
+		}
+
+		// Event handler untuk dropdown
 		$('#stageChart').change(function() {
-			var bulan = $(this).val(); // Pastikan ini menghasilkan angka 1-12
+			var bulan = parseInt($(this).val());
+			console.log("Bulan yang dipilih:", bulan);
 			buatGrafik(bulan);
 		});
+
+
+		var bulanAwal = parseInt($('#stageChart').val());
+		console.log("Bulan awal:", bulanAwal);
+		buatGrafik(bulanAwal);
 	});
 </script>

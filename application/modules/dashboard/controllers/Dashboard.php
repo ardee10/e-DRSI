@@ -8,7 +8,6 @@ class Dashboard extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('M_dashboard');
-		// $this->load->session()
 		$this->load->helper('tgl_indo');
 	}
 
@@ -16,21 +15,51 @@ class Dashboard extends CI_Controller
 	public function DisplayFinding()
 	{
 
-		// $factory = 'DRSI';
 		$bulan = date("m", strtotime(date("Y-m-d")));
 		$tahun = date("Y", strtotime(date("Y-m-d")));
 		$data = [
-
 			'bulan'     => $bulan,
 			'tahun'     => $tahun,
 			'gedung' 	=> $this->M_dashboard->get_gedung(),
-			'dashboard' => $this->M_dashboard->dashboard()
+			'dashboard' => $this->M_dashboard->dashboard(),
+
 		];
 		$this->load->view('part/header');
 		$this->load->view('Display_Finding', $data);
 		$this->load->view('part/_js');
 	}
 
+	public function getDefectData()
+	{
+		$data = $this->M_dashboard->grafikDefect();
+		echo json_encode($data);
+	}
+	/* Top Member 10 */
+	public function topMemberSelfInspect()
+	{
+		$topMemberSelfInspect = $this->M_dashboard->get_inspeksi();
+		$arraypush = [];
+
+		if ($topMemberSelfInspect) {
+			foreach ($topMemberSelfInspect as $item) {
+				// Cari index nama_leader yang sama di $arraypush
+				$index = array_search($item->nama_leader, array_column($arraypush, 'nama_leader'));
+
+				if ($index !== false) {
+					// Jika ditemukan, tambahkan count2 ke item yang sudah ada
+					$arraypush[$index]['count2'] += $item->count2;
+				} else {
+					// Jika tidak ditemukan, tambahkan item baru ke $arraypush
+					$arraypush[] = [
+						'nama_leader' => $item->nama_leader,
+						'count2' => $item->count2
+					];
+				}
+			}
+		}
+
+		echo json_encode($arraypush); // Output data dalam format JSON
+	}
 	public function DataFindingId($id)
 	{
 		$data =  $this->M_dashboard->DataFindingId($id);

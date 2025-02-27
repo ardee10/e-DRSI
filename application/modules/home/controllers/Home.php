@@ -38,16 +38,16 @@ class Home extends CI_Controller
 		$id = [
 			'id_finding' => $id
 		];
-		$this->M_Home->hapusFinding($id);
+		$this->M_home->hapusFinding($id);
 		$this->session->set_flashdata('flash', 'Data berhasil dihapus');
-		redirect('', 'refresh');
+		redirect('Home', 'refresh');
 	}
 
 	/* Data Finding By ID */
 	// http://192.168.44.97/e-drsi/Home/detailFinding/33
 	public function detailFinding($id)
 	{
-		$data =  $this->M_Home->detailFinding($id);
+		$data =  $this->M_home->detailFinding($id);
 		echo json_encode($data);
 	}
 
@@ -55,7 +55,8 @@ class Home extends CI_Controller
 
 	public function getDefectData($bulan)
 	{
-		$data = $this->db->get_where('tbl_finding', array('MONTH(date)' => $bulan))->result(); // Ganti nama tabel
+
+		$data = $this->M_home->getDefectData($bulan);
 		echo json_encode($data);
 	}
 
@@ -76,6 +77,14 @@ class Home extends CI_Controller
 
 			$this->template->load('part/template', 'index_leader', $data);
 		}
+	}
+
+	/* Detail data finding */
+
+	public function DataFindingId($id)
+	{
+		$data =  $this->M_home->DataFindingId($id);
+		echo json_encode($data);
 	}
 
 	/* Open Form DRSI */
@@ -138,52 +147,65 @@ class Home extends CI_Controller
 		if (!$this->session->userdata('nik')) {
 			redirect('auth/index_leader');
 		} else {
+
 			$where = $this->session->userdata('nik');
 			$drsidata = $this->M_home->dataDrsi($where);
-			$bulan = date('m', strtotime($drsidata[0]->date)); // Ambil bulan dari data pertama (asumsi semua data dalam bulan yang sama)
-			$tahun = date('Y', strtotime($drsidata[0]->date)); // Ambil tahun dari data pertama
-			$jumlahHari = cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun); // Hitung jumlah hari dalam bulan
-			$tanggalArray = []; // Array untuk menyimpan tanggal
+			if ($drsidata) {
+				/* Jika ada datanya */
+				$bulan = date('m', strtotime($drsidata[0]->date)); // Ambil bulan dari data pertama 
+				$tahun = date('Y', strtotime($drsidata[0]->date)); // Ambil tahun dari data pertama
+				$jumlahHari = cal_days_in_month(CAL_GREGORIAN, $bulan, $tahun); // Hitung jumlah hari dalam bulan
+				$tanggalArray = []; // Array untuk menyimpan tanggal
 
-			for ($i = 1; $i <= $jumlahHari; $i++) {
-				$tanggal = date('Y-m-d', strtotime($tahun . '-' . $bulan . '-' . $i));
-				$tanggalArray[] = $tanggal;
-			}
-			$dataGrafik = []; // Array untuk menyimpan data grafik
-
-			foreach ($tanggalArray as $tanggal) {
-				$jumlah = 0; // Inisialisasi jumlah untuk setiap tanggal
+				for ($i = 1; $i <= $jumlahHari; $i++) {
+					$tanggal = date('Y-m-d', strtotime($tahun . '-' . $bulan . '-' . $i));
+					$tanggalArray[] = $tanggal;
+				}
 				$dataGrafik = []; // Array untuk menyimpan data grafik
 
-				//Ambil data dari database berdasarkan nik
-				// Loop melalui data yang diambil dari database
-				foreach ($drsidata as $data) {
-					$tanggal = $data->date; // Ambil tanggal dari data
-					$jumlah = $data->count2; // Ambil jumlah dari data
+				foreach ($tanggalArray as $tanggal) {
+					$jumlah = 0; // Inisialisasi jumlah untuk setiap tanggal
+					$dataGrafik = []; // Array untuk menyimpan data grafik
 
-					// Periksa apakah tanggal sudah ada di array $dataGrafik
-					if (isset($dataGrafik[$tanggal])) {
-						// Jika sudah ada, tambahkan jumlahnya
-						$dataGrafik[$tanggal]['jumlah'] += $jumlah;
-					} else {
-						// Jika belum ada, buat entri baru
-						$dataGrafik[$tanggal] = [
+					// Loop melalui data yang diambil dari database
+					foreach ($drsidata as $data) {
+						$tanggal = $data->date; // Ambil tanggal dari data
+						$jumlah = $data->count2; // Ambil jumlah dari data
+
+						// Periksa apakah tanggal sudah ada di array $dataGrafik
+						if (isset($dataGrafik[$tanggal])) {
+							// Jika sudah ada, tambahkan jumlahnya
+							$dataGrafik[$tanggal]['jumlah'] += $jumlah;
+						} else {
+							// Jika belum ada, buat entri baru
+							$dataGrafik[$tanggal] = [
+								'tanggal' => $tanggal,
+								'jumlah' => $jumlah
+							];
+						}
+					}
+					// Ubah format array agar sesuai dengan yang dibutuhkan oleh grafik
+					$dataGrafikArray = [];
+					foreach ($dataGrafik as $tanggal => $data) {
+						$dataGrafikArray[] = [
 							'tanggal' => $tanggal,
-							'jumlah' => $jumlah
+							'jumlah' => $data['jumlah']
 						];
 					}
-				}
 
-				// Ubah format array agar sesuai dengan yang dibutuhkan oleh grafik
-				$dataGrafikArray = [];
-				foreach ($dataGrafik as $tanggal => $data) {
-					$dataGrafikArray[] = [
-						'tanggal' => $tanggal,
-						'jumlah' => $data['jumlah']
-					];
-				}
+					// Periksa apakah $dataGrafikArray kosong
+					if (empty($dataGrafikArray)) {
+						// Jika kosong, buat data default
+						$dataGrafikArray[] = [
+							'tanggal' 	=> date('Y-m-d'), // Tanggal saat ini
+							'jumlah' 	=>  0
 
-				$data['dataGrafik'] = $dataGrafikArray;
+						];
+					}
+					$data['dataGrafik'] = $dataGrafikArray;
+				}
+			} else {
+				echo "Data tidak ditemukan.";
 			}
 
 			$dataDefect = $this->db->get('tbl_defect')->result(); // Ambil data dari tbl_defect
@@ -197,11 +219,16 @@ class Home extends CI_Controller
 				];
 			}
 
-
 			$data['title'] = 'GRAFIK';
 			$data['leader'] = $this->db->get_where('tbl_leader', ['nik' => $this->session->userdata('nik')])->row();
-			// $data->dataGrafik = $dataGrafik;
-			$data['dataGrafik'] = $dataGrafikArray;
+			// $data['dataGrafik'] = $dataGrafikArray;
+
+			if (isset($dataGrafikArray) && !empty($dataGrafikArray)) {
+				$data['dataGrafik'] = $dataGrafikArray;
+			} else {
+				// echo 'ANDA BELUM MENGISI APAPUN'; // Atau tampilkan pesan lain yang sesuai
+				$data['dataGrafik'] = 'ANDA BELUM MENGISI APAPUN';
+			}
 			$data['dataGrafikDefect'] = $dataGrafikDefect;
 			$this->template->load('part/template', 'graph_leader', $data);
 		}

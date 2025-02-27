@@ -70,9 +70,23 @@ $(document).ready(function () {
     $('#table_').DataTable({
         pageLength: 10
     });
-
+ 
 	$('#table_sub_defect').DataTable({
         pageLength: 10
+    });
+
+	/* Self Inspect */
+	$('#table_selfinspect').DataTable({
+		fixedColumns: {
+			// leftColumns: 3, 
+			
+			
+		},
+		pageLength: 10,
+		// paging: true,
+		scrollCollapse: true,
+		// scrollX: true,
+		// scrollY: 500
     });
   
 	const base = $('#base_url').data('id');

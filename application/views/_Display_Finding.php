@@ -1,0 +1,458 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="table-responsive">
+				<div class="table-wrapper">
+					<div class="table-title">
+						<div class="row">
+							<div class="col-sm-2">
+								<img class="img-thumbnail" src="<?= base_url('') ?>assets/img/5.jpeg" width="250" height="250" alt="">
+							</div>
+							<div class="col-sm-6">
+								<h2> DRSI (Defective Reduction Throught Self Inspection)</h2>
+							</div>
+							<div class="col-sm-4">
+								<!-- <a href="<?= base_url('Dashboard/formSubmit') ?>" target="_blank" class="btn btn-primary"><i class="material-icons">&#xE863;</i> <span><b>DRSI</b> FORM</span></a> -->
+								<button class="btn btn-primary" onclick="submitForm()"><i class="material-icons">&#xE863;</i> <span><b>DRSI</b> FORM</span></button>
+								<button class="btn btn-secondary" onclick="trackingDrsi(this)"><i class="material-icons">&#xE24D;</i> <span><b>Export to Excel</b></span></button>
+							</div>
+						</div>
+					</div>
+					<div class="table-filter">
+						<div class="row mb-6">
+							<div class="col-sm-3 mb-2">
+
+							</div>
+
+							<div class="col-sm-3 mb-2">
+								<!-- <select name="month" id="filter_gedung" class="form-control" onchange="filter_drsi()">
+							<?php
+							for ($iM = 1; $iM <= 12; $iM++) {
+								$mont = date("F", strtotime("$iM/12/10"));
+								$g = date("m", strtotime("$iM/12/10"));
+								$thismo = date('F');
+							?>
+								<option value="<?= $g ?>" <?= ($g == $bulan) ? "selected" : "" ?>><?= $mont ?></option>
+							<?php
+							}
+							?>
+						</select> -->
+							</div>
+							<div class="col-sm-3 mb-2">
+								<!-- <select name="month" id="filter_tahun" class="form-control" onchange="filter_drsi()">
+							<?php
+							for ($i = date('Y'); $i >= date('Y') - 1; $i -= 1) { ?>
+								<option value="<?= $i ?>" <?= ($i == $tahun) ? "selected" : "" ?>> <?= $i ?> </option>
+							<?php }
+							?>
+						</select> -->
+							</div>
+
+							<div class="col-sm-3 mb-2 float-end">
+								<label for="gedung" class="col-sm-2 col-form-label mb-1"><b>Gedung</b></label>
+								<select name="gedung" id="filter_gedung" class=" form-select col-sm-2 form-control">
+									<option value='all'>---All---</option>
+									<?php
+									foreach ($gedung as $gd):
+									?>
+
+										<option value="<?= $gd->gedung ?>"><?= $gd->gedung ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+
+
+						</div>
+					</div>
+					<table id="tbl_display" class="table table-hover table-responsive-lg display responsive nowrap" width="100%">
+						<!-- <table id="tbl_display" class="table table-hover table-responsive"> -->
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Date</th>
+								<th>Factory</th>
+								<th>Cell No</th>
+								<th>Model Name</th>
+								<th>ART Nomor</th>
+								<th>Defect Stage</th>
+								<th>Defect Standart Name</th>
+								<th>Defect Photo</th>
+								<th>Defect Source</th>
+								<th>Defect Area</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<?php
+
+								$no = 1;
+								foreach ($dashboard as $data) {
+									$img_finding = $data->picture;
+								?>
+
+
+									<td><?= $no++; ?></td>
+									<td><?= date_indo($data->date); ?></td>
+									<td><?= $data->gedung; ?></td>
+									<td><?= $data->cell; ?></td>
+									<td><?= $data->artikel; ?></td>
+									<td><?= $data->model; ?></td>
+									<td><?= $data->nama_defect; ?></td>
+									<td><?= $data->nama_defect_sub_class; ?></td>
+									<td>
+										<?php if ($img_finding == null) {
+											$img = 'assets/img/no-images.png';
+										} else {
+											$path = 'assets/img/img-finding/' . $data->picture;
+											if (file_exists($path) && $data->picture) {
+												$img = 'assets/img/img-finding/' . $data->picture;
+											} else {
+												$img = 'assets/img/no-images.png';
+											}
+										}
+										?>
+										<img width="50px" src="<?= $img ?>" class="rounded">
+									</td>
+									<td><?= $data->defect_source ?></td>
+									<td><?= $data->defect_area ?></td>
+									<td>
+										<button type="button" class="btn btn-success detail-button" onclick="modalDisplay(this)" data-id="<?= $data->id_finding ?>"><i class=" icofont-folder-close"></i>
+											Detail
+										</button>
+									</td>
+
+							</tr>
+						<?php
+								}
+						?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<!-- Chart disini -->
+<div class="row">
+	<div class="col-lg-6">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title text-bold">DEFECT REDUCTION - TREND CHART</h5>
+				<!-- Line Chart -->
+				<div id="chartdefect"></div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-6">
+		<div class="card">
+			<div class="card-body">
+				<h5 class="card-title">SELF INSPECTION & AWARENESS MEMBERS - TREND CHART</h5>
+
+				<!-- Member Chart -->
+				<div id="selfChart"></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- End Chart disini -->
+
+
+
+<div class="credits text-center">
+	<div class="copyright">
+		&copy; Copyright <span class="text-center text-dark">FAST TRACK - PT Parkland Word Indonesia Jepara. All Rights Reserved </span>
+	</div>
+	<div class="credits">
+		<p class="text-dark">Develop by <a href="#" class="text-dark">IT Department</a></p>
+	</div>
+
+</div>
+</div>
+
+<!-- Modal Detail Display -->
+<div class="modal fade" id="modalDisplay" tabindex="-1">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Detail Informasi Defect Sepatu</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<!-- Form Modal -->
+				<form class="row g-3" id="modalDisplay">
+					<!-- <table id="detail_finding" class="table table-hover table-responsive"> -->
+					<div class="col-md-12">
+						<label for="Date" class="form-label">Date</label>
+						<input teype="text" class="form-control" name="date" id="date" readonly>
+					</div>
+					<div class="col-md-6">
+						<label for="Factory" class="form-label">Factory</label>
+						<input type="text" class="form-control" name="gedung" id="factory" readonly>
+					</div>
+					<div class="col-md-6">
+						<label for="cell" class="form-label">Line Cell</label>
+						<input type="text" class="form-control" id="cell" readonly>
+					</div>
+					<div class="col-6">
+						<label for="artikel" class="form-label">Artikel</label>
+						<input type="text" class="form-control" id="artikel" readonly>
+					</div>
+					<div class="col-6">
+						<label for="model" class="form-label">Model</label>
+						<input type="text" class="form-control" id="model" readonly>
+					</div>
+					<div class="col-md-12">
+						<label for="defect_Stage" class="form-label">Defect Stage</label>
+						<input type="text" class="form-control" id="defect_stage" readonly>
+					</div>
+					<div class="col-md-12">
+						<label for="defectName2" class="form-label">Defect Standart Name</label>
+						<input type="text" class="form-control" id="defectName2" readonly>
+					</div>
+
+					<div class="col-md-4">
+						<label for="pairs" class="form-label">Pairs</label>
+						<input type="text" class="form-control" id="pairs" readonly>
+					</div>
+					<div class="col-md-8">
+						<label for="photo" class="form-label">Photo</label>
+						<div class="row">
+							<div class="col-md-8">
+
+								<img id="picture" class="img-thumbnail">
+							</div>
+						</div>
+
+					</div>
+					<div class="col-6">
+						<label for="defect_source" class="form-label">Defect Source</label>
+						<input type="text" class="form-control" id="defect_source" readonly>
+					</div>
+					<div class="col-6">
+						<label for="self_inspect" class="form-label">Self Inspect</label>
+						<input type="text" class="form-control" id="self_inspect" readonly>
+					</div>
+					<div class="col-6">
+						<label for="who_defect_go" class="form-label">Who Defect Got</label>
+						<input type="text" class="form-control" id="who_defect_go" readonly>
+					</div>
+					<div class="col-6">
+						<label for="count" class="form-label">Count</label>
+						<input type="text" class="form-control" id="count" readonly>
+					</div>
+					<div class="col-6">
+						<label for="defect_area" class="form-label">Defect Area</label>
+						<input type="text" class="form-control" id="defect_area" readonly>
+					</div>
+					<div class="col-6">
+						<label for="who_stop_defect" class="form-label">Who Defect Found</label>
+						<input type="text" class="form-control" id="who_stop_defect" readonly>
+					</div>
+					<div class="col-2">
+						<label for="count2" class="form-label">Counts</label>
+						<input type="text" class="form-control" id="count2" readonly>
+					</div>
+					<div class="col-10">
+						<label for="remark" class="form-label">Remark</label>
+						<textarea class="form-control" id="remark" style="height: 100px;" readonly></textarea>
+
+					</div>
+				</form>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div><!-- End Extra Large Modal-->
+
+	<script>
+		/* Select Building */
+		var base = $('#base_url').data('id')
+
+		function modalDisplay(ctx) {
+			let id = $(ctx).data('id')
+			// e.preventDevault();
+			if (id) {
+				$.ajax({
+					type: "GET",
+					url: `${base}dashboard/DataFindingId/${id}`,
+					dataType: "json",
+					success: function(data) {
+						$('#date').val(data.date);
+						$('#factory').val(data.gedung);
+						$('#cell').val(data.cell);
+						$('#artikel').val(data.artikel);
+						$('#model').val(data.model);
+						$('#defect_stage').val(data.defect_stage);
+						$('#defectName2').val(data.nama_defect_sub_class);
+						$('#pairs').val(data.pairs);
+						$('#defect_source').val(data.defect_source);
+						$('#self_inspect').val(data.self_inspect);
+						$('#who_defect_go').val(data.who_defect_go);
+						$('#count').val(data.count);
+						$('#defect_area').val(data.defect_area);
+						$('#who_stop_defect').val(data.who_stop_defect);
+						$('#count2').val(data.count2);
+						$('#remark').val(data.remark);
+						$("#picture").attr("src", base + "assets/img/img-finding/" + data.picture)
+					}
+				});
+			}
+			$('#modalDisplay').modal('show')
+
+		}
+
+		function trackingDrsi() {
+			window.open(base + 'Drsitrack/filterDrsi')
+		}
+
+		function submitForm() {
+
+			let text = "SILAHKAN LOGIN TERLEBIH DAHULU";
+			if (confirm(text) == true) {
+				window.open(base + 'auth/login_leader')
+			} else {
+				window.close
+			}
+		}
+		/* ChartDefect */
+		$(document).ready(function() {
+			var chart;
+			$.ajax({
+				type: 'GET',
+				url: base + "Dashboard/getDefectData",
+				dataType: 'json',
+				success: function(data) {
+					var defectCounts = {};
+					var tanggalArray = [];
+					var seriesData = [];
+					data.forEach(item => {
+						var tanggal = moment(item.date).format('D MMM Y'); // Format tanggal
+						// console.log(tanggal);
+						if (!tanggalArray.includes(tanggal)) {
+							tanggalArray.push(tanggal);
+						}
+						if (!defectCounts[tanggal]) {
+							defectCounts[tanggal] = {};
+						}
+						if (!defectCounts[tanggal][item.nama_defect]) {
+							defectCounts[tanggal][item.nama_defect] = 0;
+						}
+						defectCounts[tanggal][item.nama_defect]++;
+					});
+					var series = [];
+					var defectStages = new Set();
+					// console.log(defectStages);
+					tanggalArray.forEach(tanggal => {
+						for (const defectStage in defectCounts[tanggal]) {
+							defectStages.add(defectStage);
+						}
+					});
+					defectStages.forEach(defectStage => {
+						var data = [];
+						tanggalArray.forEach(tanggal => {
+							data.push(defectCounts[tanggal] && defectCounts[tanggal][defectStage] ? defectCounts[tanggal][defectStage] : 0);
+						});
+						series.push({
+							name: defectStage,
+							data: data
+						});
+					});
+					if (chart) {
+						chart.destroy();
+					}
+					var options = {
+						series: series,
+						chart: {
+							height: 350,
+							type: 'line', // 
+							zoom: {
+								enabled: false
+							}
+						},
+						dataLabels: {
+							enabled: false
+						},
+						stroke: {
+							curve: 'smooth',
+							curve: ['straight', 'smooth', 'monotoneCubic', 'stepline']
+						},
+						grid: {
+							row: {
+								colors: ['#f3f3f3', 'transparent'],
+								opacity: 0.5
+							},
+						},
+						xaxis: {
+							categories: tanggalArray
+						},
+						yaxis: {
+							title: {
+								text: 'Jumlah'
+							},
+						},
+					};
+
+					var chart = new ApexCharts(document.querySelector("#chartdefect"), options);
+					chart.render();
+				},
+				error: function(error) {
+					console.error("Error fetching data:", error);
+				}
+			});
+
+			/* TOP Member Chart */
+
+			var top10Inspect;
+			const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#f1c40f', '#34495e', '#e67e22', '#7f8c8d']; // Array warna
+			$.ajax({
+				type: 'GET',
+				url: base + "Dashboard/topMemberSelfInspect",
+				dataType: 'json',
+				success: function(data) {
+
+					// console.log(data);
+					var options = {
+						series: [{
+							data: data.map(item => item.count2)
+						}],
+						chart: {
+							height: 350,
+							type: 'bar'
+						},
+						colors: data.map((item, index) => colors[index % colors.length]), // Berikan warna dari array, gunakan modulo untuk循环
+						xaxis: {
+							categories: data.map(item => item.nama_leader)
+						},
+						title: {
+							text: 'TOP 10 MEMBERS - WHO STOP DEFECT'
+
+						},
+						stroke: {
+							show: true,
+							width: 2,
+							colors: ['transparent']
+						}
+					};
+					var chart = new ApexCharts(document.querySelector("#selfChart"), options);
+					chart.render();
+				},
+				error: function(error) {
+					console.error("Error fetching data:", error);
+				}
+			});
+
+
+		});
+	</script>
